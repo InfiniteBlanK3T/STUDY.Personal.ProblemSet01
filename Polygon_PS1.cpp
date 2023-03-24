@@ -26,4 +26,4 @@ Polygon Polygon::transform(const Matrix3x3& aMatrix) const noexcept
 	}
 
 	return transform;
-} 
+}
