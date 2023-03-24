@@ -90,17 +90,21 @@ Matrix3x3 Matrix3x3::rotate( const float aAngleInDegree )
 }
 
 Matrix3x3 Matrix3x3::operator*(const Matrix3x3& aOther) const noexcept
-{    
-    return Matrix3x3(   Vector3D(row(0).dot(column(0)), row(0).dot(column(1)), row(0).dot(column(2))),
-                        Vector3D(row(1).dot(column(0)), row(1).dot(column(1)), row(1).dot(column(2))),
-                        Vector3D(row(2).dot(column(0)), row(2).dot(column(1)), row(2).dot(column(2))));
+{   
+    Vector3D r0 = row(0), r1 = row(1), r2 = row(2);
+    Vector3D c0 = column(0), c1 = column(1), c2 = column(2);
+    return Matrix3x3(   Vector3D( r0.dot(c0), r0.dot(c1), r0.dot(c2) ),
+                        Vector3D( r1.dot(c0), r1.dot(c1), r1.dot(c2) ),
+                        Vector3D( r2.dot(c0), r2.dot(c1), r2.dot(c2) )
+    );
 }
 
 float Matrix3x3::det() const noexcept
 {
-    return row(0).x() * ( row(1).y() * row(2).w() - row(1).w() * row(2).y() )
-        -  row(0).y() * ( row(1).x() * row(2).w() - row(1).w() * row(2).x() )
-        +  row(0).w() * ( row(1).x() * row(2).y() - row(1).y() * row(2).x() ) ;
+    Vector3D r0 = row(0), r1 = row(1), r2 = row(2);
+    return r0.x() * ( r1.y() * r2.w() - r1.w() * r2.y() )
+        -  r0.y() * ( r1.x() * r2.w() - r1.w() * r2.x() )
+        +  r0.w() * ( r1.x() * r2.y() - r1.y() * r2.x() ) ;
 }
 
 bool Matrix3x3::hasInverse() const noexcept
@@ -112,16 +116,21 @@ bool Matrix3x3::hasInverse() const noexcept
 //
 Matrix3x3 Matrix3x3::transpose() const noexcept
 {
-    return Matrix3x3(   Vector3D(row(0).x(), row(1).x(), row(2).x()),
-                        Vector3D(row(0).y(), row(1).y(), row(2).y()),
-                        Vector3D(row(0).w(), row(1).w(), row(2).w()) );
+    Vector3D r0 = row(0), r1 = row(1), r2 = row(2);
+    return Matrix3x3(   Vector3D( r0.x(), r1.x(), r2.x() ),
+                        Vector3D( r0.y(), r1.y(), r2.y() ),
+                        Vector3D( r0.w(), r1.w(), r2.w() )
+                    );
 }
 Matrix3x3 Matrix3x3::inverse() const
-{
-    return Matrix3x3( Vector3D( row(1).y() * row(2).w() - row(1).w() * row(2).y(), row(0).w() * row(2).y() - row(0).y() * row(2).w(), row(0).y() * row(1).w() - row(0).w() * row(1).y() ),
-                      Vector3D( row(1).y() * row(2).w() - row(1).w() * row(2).y(), row(0).w() * row(2).y() - row(0).y() * row(2).w(), row(0).y() * row(1).w() - row(0).w() * row(1).y() ),
-                      Vector3D( row(1).y() * row(2).w() - row(1).w() * row(2).y(), row(0).w() * row(2).y() - row(0).y() * row(2).w(), row(0).y() * row(1).w() - row(0).w() * row(1).y() )
-    ) * ( 1 / Matrix3x3().det() );
+{    
+    float reciprocal = 1.0f / this->det();
+    Vector3D r0 = row(0), r1 = row(1), r2 = row(2);
+
+    return Matrix3x3( Vector3D( r1.y() * r2.w() - r1.w() * r2.y(), r0.w() * r2.y() - r0.y() * r2.w(), r0.y() * r1.w() - r0.w() * r1.y() ),
+                      Vector3D( r1.w() * r2.x() - r1.x() * r2.w(), r0.x() * r2.w() - r0.w() * r2.x(), r0.w() * r1.x() - r0.x() * r1.w() ),
+                      Vector3D( r1.x() * r2.y() - r1.y() * r2.x(), r0.y() * r2.x() - r0.x() * r2.y(), r0.x() * r1.y() - r0.y() * r1.x() )
+    ) * reciprocal;
     
 }
 
