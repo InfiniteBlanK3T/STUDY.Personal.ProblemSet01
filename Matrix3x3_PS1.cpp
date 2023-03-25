@@ -2,6 +2,7 @@
 // COS30008, tutorial 3, 2023
 
 #define _USE_MATH_DEFINES     // must be defined before any #include
+#include <cassert>
 
 #include "Matrix3x3.h"
 
@@ -109,9 +110,11 @@ float Matrix3x3::det() const noexcept
 
 bool Matrix3x3::hasInverse() const noexcept
 {
-    if (Matrix3x3().det() != 0)
+    if (Matrix3x3().det() > 0)
         return true;
-    else return false;
+    else
+        return false;   
+        
 }
 //
 Matrix3x3 Matrix3x3::transpose() const noexcept
